@@ -56,7 +56,9 @@ common =
 
       # Seems to be required when using std::atomic with 64-bit types
       env = {
-        NIX_LDFLAGS = lib.optionalString (stdenv.hostPlatform.system == "armv6l-linux") "-latomic";
+        NIX_LDFLAGS = lib.optionalString
+          (with stdenv.hostPlatform; isAarch32 && isLinux && lib.versionOlder (parsed.cpu.version or "99") "7")
+          "-latomic";
         VERSION_SUFFIX = lib.optionalString fromGit suffix;
       };
 
